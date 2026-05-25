@@ -14,6 +14,7 @@ def atender_cliente(conexion, direccion, frases, total_lineas):
                     break
                 datos += trozo
             comando = datos.decode(ENCODING).strip()
+            print(f"{direccion[0]} {comando}", file=sys.stderr)
             respuesta = generar_respuesta(comando, frases, total_lineas)
             conexion.sendall(respuesta.encode(ENCODING))
         except Exception as e:
