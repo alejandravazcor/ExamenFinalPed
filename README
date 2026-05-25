@@ -1,0 +1,80 @@
+# Sistema cliente-servidor de frases
+
+## Puerto de escucha
+
+El servidor escucha en el puerto TCP 11030 (calculado como 11000 + 10*3).
+
+## Sistema operativo
+
+openSUSE Linux (probado en openSUSE Leap/Tumbleweed)
+
+## Herramientas necesarias
+
+- Python 3.13 o superior
+- pytest (para ejecutar los tests)
+
+## Instalacion de dependencias
+
+El sistema no tiene sudo. Crear un entorno virtual para instalar pytest:
+
+    python3 -m venv venv
+    source venv/bin/activate
+    pip install pytest
+
+## Procedimiento de ejecucion
+
+### 1. Activar el entorno virtual (si se usa pytest)
+
+    source venv/bin/activate
+
+### 2. Arrancar el servidor
+
+    python3 servidor.py frases
+
+El servidor se queda escuchando en el puerto 11030 de forma continua.
+Imprime por stderr la IP del cliente y el mensaje recibido cada vez
+que acepta una conexion.
+
+### 3. Ejecutar el cliente (en otra terminal)
+
+    python3 cliente.py
+
+El cliente pregunta la direccion del servidor. Introducir por ejemplo:
+
+    localhost
+
+Envia 3 mensajes (frase, frase, total), imprime las respuestas
+y se desconecta. Si no puede conectar imprime un error por stderr.
+
+### 4. Ejecutar los tests TDD
+
+    python3 -m pytest test_protocolo.py -v
+
+## Protocolo de mensajes
+
+Conexion TCP en UTF-8. El cliente envia un comando terminado en \n.
+El servidor responde y cierra la conexion.
+
+Comandos:
+
+  frase   ->  frase <texto aleatorio del fichero>
+  total   ->  N FRASES M LINEAS
+  <otro>  ->  error
+
+## Fichero de frases
+
+Formato fortune: bloques de texto separados por lineas con solo "%".
+El fichero "frases" incluido tiene 105 frases y 499 lineas.
+
+## Ficheros del proyecto
+
+  protocolo.py      Abstraccion de mensajes cliente y servidor
+  servidor.py       Servidor TCP
+  cliente.py        Cliente TCP
+  test_protocolo.py Tests TDD del modulo protocolo
+  frases            Fichero de frases en formato fortune
+  DATOS             Datos del alumno
+
+## Tests
+
+    python3 -m pytest test_protocolo.py -v
